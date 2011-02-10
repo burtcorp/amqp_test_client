@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'amqp_test_client'
+
+
+unless ARGV.size == 2
+  $stderr.puts('Usage: consume <host> <queue>')
+  exit 1
+end
+
+run(*ARGV) do |exchange, queue|
+  queue.subscribe do |message|
+    puts message
+  end
+end

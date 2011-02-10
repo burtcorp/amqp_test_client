@@ -1,0 +1,19 @@
+# AMQP test client
+
+## Publishing
+
+To publish a message to an exchange:
+
+    echo "hello" | ./bin/publish localhost my_exchange
+
+This will publish the message "hello" to the exchange "my_exchange" on the broker running on localhost. A queue with the same name as the exchange will be created and bound to the exchange, so messages will remain as long as the broker is running (or they are consumed).
+
+Each line on STDIN will be published as a separate message.
+
+## Consuming
+
+To consume all messages in a queue:
+
+    ./bin/consume localhost my_queue
+
+This will read all messages from "my_queue", and then block until new messages are published. An exchange with the same name as the queue will be created and bound.

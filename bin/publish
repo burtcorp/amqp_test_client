@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'amqp_test_client'
+
+
+unless ARGV.size == 2
+  $stderr.puts('Usage: publish <host> <exchange> # reads messages from STDIN')
+  exit 1
+end
+
+def publish_next(exchange)
+  exchange.publish($stdin.readline)
+end
+
+run(*ARGV) do |exchange, queue|
+  loop_body = proc do
+    if $stdin.eof?
+      EM.stop
+    else
+      publish_next(exchange)
+      EM.next_tick(loop_body)
+    end
+  end
+  EM.next_tick(loop_body)
+end
